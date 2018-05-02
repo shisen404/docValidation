@@ -1,0 +1,84 @@
+<html>
+<head>
+ <title>Document Verification Postal</title>
+ <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+ <link href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css' rel='stylesheet' type='text/css'>
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>/
+ <script src="./javascripts/wzrd_buffer.js"></script>
+<script src="./javascripts/ipfsAPI.js"></script>
+<script src="./javascripts/web3.min.js"></script>
+    <script type="text/javascript">
+
+      // var Web3 = re
+
+    function upload() {
+      console.log('here');
+      const reader = new FileReader();
+      reader.onloadend = function() {
+        const ipfs = window.IpfsApi('127.0.0.1', 5001) // Connect to IPFS
+        const buf = buffer.Buffer(reader.result) // Convert data into buffer
+        ipfs.files.add(buf, (err, result) => { // Upload buffer to IPFS
+          if(err) {
+            console.error(err)
+            return
+          }
+          let url = `https://ipfs.io/ipfs/${result[0].hash}`
+          console.log(`Url --> ${url}`);
+          document.getElementById("url").value= result[0].hash;
+          
+          document.getElementById("url").innerHTML= url
+          document.getElementById("url").href= url
+          document.getElementById("output").src = url
+        })
+      }
+      const photo = document.getElementById("document-image");
+      reader.readAsArrayBuffer(photo.files[0]); // Read Provided File
+    }
+</script>
+
+</head>
+<body>
+ <div class="container">
+  <h1>Add a document</h1>
+  <div class="container">
+   <div class="row">
+    <div style="display: none;" class="alert alert-success" id="msg"></div>
+    <form class="form-horizontal col-sm-5" id="upload-item"  method="post" action="/upload">
+     <div class="form-group">
+      <label for="student-id" class="col-sm-2 control-label">Student-ID</label>
+      <div class="col-sm-10">
+       <input type="text" name="student-id" class="form-control" id="student-id" required="required"></input>
+      </div>
+     </div>
+     
+    
+     <div class="form-group">
+      <!-- <label for="product-image" class="col-sm-2 control-label">Image</label> -->
+      <div class="col-sm-10">
+        <input type="file" lass="form-control" name="document-image" id="document-image" name="document-image">
+         <button type="button"  onclick="upload()">Submit</button>
+
+        <!-- <img id='output'> -->
+       <!-- <input type="text" crequired="required"></input> -->
+      </div>
+     </div>
+      <div class="form-group">
+      <!-- <label for="product-image" class="col-sm-2 control-label">Image</label> -->
+      <div class="col-sm-10">
+        <input type="text" hidden="hidden" name="url" class="form-control" id="url"></input>
+     <!-- URL:<a id="url" ></a> -->
+        </div>
+     </div>
+     
+     
+     <div class="form-group">
+      <div class="col-sm-offset-2 col-sm-10">
+       <button type="submit" class="btn btn-primary" onclick= "upload()" >Add Document</button>
+      </div>
+     </div>
+    </form>
+   </div>
+  </div>
+ </div>
+</body>
+</html>

@@ -1,0 +1,65 @@
+<html>
+<head>
+ <title>Document Verification Portal</title>
+ <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+ <link href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css' rel='stylesheet' type='text/css'>
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+ <script src="./javascripts/socket.io.js"></script>
+
+ <!-- <script src="./app.js"></script> -->
+ <script type="text/javascript">
+ 	
+
+
+ 	const set = new Set();
+var socket = io();
+  socket.on('news', function (data) {
+  	console.log(data.length);
+    for(var i=0;i<data.length;i++){
+    	if(set.has(data[i])){ continue;}
+    	set.add(data[i]);
+    	// var i=0;
+ let url = 'https://ipfs.io/ipfs/'+data[i];
+
+          console.log(`Url --> ${url}`)
+          document.getElementById("url").innerHTML+= '<a href="'+url+'">'+data[i]+"</a><br>";
+          document.getElementById("url").innerHTML+= '<img src="'+url+'">'+"</img><br>";
+          
+          // document.getElementById("url").href= url
+          // document.getElementById("output").src = url
+
+    }
+    // socket.on('token',function(data){
+    
+    // })
+    // console.log('function ended');
+    // socket.emit('my other event', { my: 'data' });
+  });
+
+
+  function create(){
+  	console.log(typeof socket);
+  socket=io();
+ 	socket.emit('token',{data:'Generate Token'});
+ 	socket.on('token-back',function(data){
+	console.log("Token="+data);
+    	document.getElementById("tokens").innerHTML="<h1> Use Token="+data+"</h1>";
+ 		console.log(data);
+ 	})	
+ 	}
+// set=null;
+
+ </script>
+</head>
+<body>
+ <form class="form-horizontal col-sm-5" method="post" id="generate-token"  action="/token">
+ <div class="container">
+  <h1>Student Details</h1>
+  
+   <div id="url"></div>
+    <button type="button"  onclick="create()">Generate Link</button>
+<p id="tokens"></p>
+
+  <!-- <div id="token"></div> -->
+</body>
+</html>
